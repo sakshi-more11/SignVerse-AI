@@ -1,0 +1,7 @@
+opencv-python>=4.9
+mediapipe>=0.10.14
+torch>=2.2
+numpy>=1.26
+pandas>=2.2
+scikit-learn>=1.4
+kaggle>=1.6   # optional — only needed if using the Kaggle dataset route

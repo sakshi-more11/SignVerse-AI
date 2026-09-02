@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SignVerseAI — Real-Time Sign Language Translator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <!-- Ambient background -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-a" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-b" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="18" stroke="url(#g1)" stroke-width="1.5" opacity="0.5"/>
+        <path d="M13 25 L13 15 Q13 12 16 12 Q19 12 19 15 L19 21" stroke="url(#g1)" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M19 21 L19 14 Q19 11 22 11 Q25 11 25 14 L25 22" stroke="url(#g1)" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M25 22 L25 16 Q25 13.5 27.5 13.5 Q30 13.5 30 16 L30 24 Q30 29 25 29 L20 29 Q15 29 13 25" stroke="url(#g1)" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <defs>
+          <linearGradient id="g1" x1="10" y1="10" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#5EEAD4"/>
+            <stop offset="1" stop-color="#A78BFA"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="brand-text">
+        <span class="brand-title">SignVerseAI</span>
+        <span class="brand-subtitle">Real-Time Sign Language Translator</span>
+      </div>
+    </div>
+    <div class="status-pill" id="statusPill">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Connecting…</span>
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <!-- Setup banner, shown only if model isn't trained yet -->
+    <div class="banner banner-warn" id="setupBanner" hidden>
+      <div class="banner-icon">!</div>
+      <div class="banner-body">
+        <strong>Model not trained yet.</strong>
+        <span>Run <code>python src/data_collection.py --gesture A</code> for each gesture, then <code>python src/train_model.py</code>, and restart the server.</span>
+      </div>
+    </div>
+
+    <section class="panel video-panel">
+      <div class="panel-label">
+        <span class="eyebrow">Input signal</span>
+        <span class="scan-indicator" id="scanIndicator">scanning</span>
+      </div>
+      <div class="video-frame">
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="overlay"></canvas>
+        <div class="scan-line" aria-hidden="true"></div>
+        <div class="video-empty" id="videoEmpty">
+          <span>Allow camera access to begin</span>
+        </div>
+      </div>
+      <div class="readout-row">
+        <div class="readout">
+          <span class="readout-label">Current gesture</span>
+          <span class="readout-value" id="currentGesture">—</span>
+        </div>
+        <div class="readout confidence-readout">
+          <span class="readout-label">Confidence</span>
+          <div class="meter">
+            <div class="meter-fill" id="meterFill"></div>
+          </div>
+          <span class="readout-value small" id="confidenceValue">0%</span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel side-panel">
+      <div class="panel-label">
+        <span class="eyebrow">Gesture reference</span>
+      </div>
+      <div class="legend" id="legend"></div>
+
+      <div class="panel-label" style="margin-top: 28px;">
+        <span class="eyebrow">Pipeline</span>
+      </div>
+      <ol class="pipeline-list">
+        <li><span class="pipeline-tag">Browser</span>MediaPipe HandLandmarker extracts 21 landmarks</li>
+        <li><span class="pipeline-tag">WebSocket</span>Normalized vector streamed to backend</li>
+        <li><span class="pipeline-tag">FastAPI</span>PyTorch MLP classifies the gesture</li>
+      </ol>
+    </aside>
+
+    <section class="panel caption-panel">
+      <div class="panel-label">
+        <span class="eyebrow">Translated sentence</span>
+        <button class="clear-btn" id="clearBtn">Clear</button>
+      </div>
+      <div class="caption-strip">
+        <span class="caption-text" id="captionText"></span><span class="caption-cursor" id="captionCursor">&nbsp;</span>
+        <span class="caption-placeholder" id="captionPlaceholder">Hold a gesture steadily to start translating…</span>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span class="footer-label">Built with</span>
+    <div class="stack-chips">
+      <span class="chip">OpenCV</span>
+      <span class="chip">MediaPipe</span>
+      <span class="chip">PyTorch</span>
+      <span class="chip">FastAPI</span>
+      <span class="chip">WebSocket</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

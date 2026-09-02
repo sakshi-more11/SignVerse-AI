@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+
+# Your collected training data and trained model (regenerate locally — see README)
+data/*.csv
+models/*.pth
+models/*.json
+models/*.task
+
+# Downloaded/cloned dataset images — large, not yours to redistribute
+data_raw/
+data_raw_github/
+*.zip
